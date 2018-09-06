@@ -2,7 +2,7 @@
   ## 服务端
    参考网站(https://blog.csdn.net/ligang2585116/article/details/72827781)
    ### 代码实例：
-  ```Javascript
+```Javascript
 const http = require('http')
 //启动服务
 http.createServer(function(req,res){
