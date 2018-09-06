@@ -42,11 +42,46 @@ server.on('close', ()=>{
   console.log('服务端关闭')
 })
 ```
+  ### clientError事件：服务端error事件，当服务器异常时触发改事件
+```Javascript
+server.on('error', (exception)=>{
+  if(exception.code === 'EADDRINUSE') {
+    // 端口被占用
+  }
+})
+```
+### 其他属性
+  * 开启HTTP服务器监听连接
+``` Javascript
+server.listen(3000)
+```
+  * 表示服务器是否正在监听返回布尔值
+``` Javascript
+server.on('listening', (e)=>{
+  console.log(e)
+})
+```
+  * 请求超时
+``` Javascript
+// 注意：默认超时时间为2分钟
+server.setTimeout(60 * 1000, () => {
+   console.log('超时了');
+});
+// 或者通过事件形式
+server.setTimeout(60 * 1000);
+server.on('timeout', () => {...});
+```
+  * 关闭服务
+``` Javascript
+server.close();
+// 服务器关闭时会触发close事件
+server.on('close', () => {...});
+```
 
   ## request response 参数介绍:
   ### request参数主要获取客户端请求信息
     从客户端请求流中读取时会触发data事件， 当读取完客户端请求中数据时触发end事件
-  >> request 中一些属性
+  request 中一些属性
   * method       获取请求方法，是Get请求还是Post请求，包含(Get、Post、Put、Delete)
   * url          客户端发送请求时使用的url参数字符串,用来判断请求页面
   * headers       获取请求头
@@ -63,5 +98,25 @@ server.on('request', (req, res)=>{
   res.end()
 })
 ```
-  
+  ### response参数主要发送服务器端响应流
+  * getHeader    write方法第一次被调用时发送响应头
+  * writeHead    该方法被调用时发送响应头
+``` Javascript
+/* 获取响应头中的某个字段值 */
+response.getHeader(name);
+/* 删除一个响应字段值 */
+response.removeHeader(name);
+/* 该属性表示响应头是否已发送 */
+response.headersSent;
+/* 在响应数据的尾部增加一个头信息 */
+response.addTrailers(headers);
+
+// 例子
+response.writeHead(200, {'Content-Type': 'text/plain', 'Trailer': 'Content-MD5'});
+response.write('Hello World');
+response.statusCode = 200
+response.getHeader('Content-Type', 'text/html;charset=utf-8')
+response.addTrailers({'Content-MD5', '***'});
+response.end();
+```
   
