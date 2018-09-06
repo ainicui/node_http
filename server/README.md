@@ -7,11 +7,11 @@
 const http = require('http')
 //启动服务
 http.createServer(function(req,res){
-     console.log('请求到来，解析参数');
-     //解析post请求
-     res.writeHead(200, {"content-type": "text/html;charset=utf-8"})
-     res.write('Hello World)
-     res.end()
+   console.log('请求到来，解析参数');
+   //解析post请求
+   res.writeHead(200, {"content-type": "text/html;charset=utf-8"})
+   res.write('Hello World)
+   res.end()
 }).listen(3000);
 ```
     *用server方法创建服务，以下简单案例:
