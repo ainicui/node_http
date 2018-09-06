@@ -1,8 +1,6 @@
 # http模块-服务端
   ## 简单实例
-   参考网站(https://blog.csdn.net/ligang2585116/article/details/72827781)
-   ### 代码实例：
-   *用createServer方法创建服务，该方法自动添加`request`事件方法，以下简单案例:
+  *用createServer方法创建服务，该方法自动添加`request`事件方法，以下简单案例:
 ```Javascript
 const http = require('http')
 //启动服务
@@ -14,7 +12,7 @@ http.createServer(function(req,res){
   res.end()
 }).listen(3000);
 ```
-    *用server方法创建服务，以下简单案例:
+  *用server方法创建服务，以下简单案例:
 ```Javascript
 // 启动服务
 const server = http.Server()
@@ -102,21 +100,45 @@ server.on('request', (req, res)=>{
   * getHeader    write方法第一次被调用时发送响应头
   * writeHead    该方法被调用时发送响应头
 ``` Javascript
-/* 获取响应头中的某个字段值 */
-response.getHeader(name);
-/* 删除一个响应字段值 */
-response.removeHeader(name);
-/* 该属性表示响应头是否已发送 */
-response.headersSent;
-/* 在响应数据的尾部增加一个头信息 */
-response.addTrailers(headers);
+server.on('request', (req, res)=>{
+  if(req.url !== '/favicon.ico'){ // 请求从客户端传过来的路由
+    /* 获取响应头中的某个字段值 */
+    res.setHeader(name);
+    /* 删除一个响应字段值 */
+    res.removeHeader(name);
+    /* 该属性表示响应头是否已发送 */
+    res.headersSent;
+    /* 在响应数据的尾部增加一个头信息 */
+    res.addTrailers(headers);
 
-// 例子
-response.writeHead(200, {'Content-Type': 'text/plain', 'Trailer': 'Content-MD5'});
-response.write('Hello World');
-response.statusCode = 200
-response.getHeader('Content-Type', 'text/html;charset=utf-8')
-response.addTrailers({'Content-MD5', '***'});
-response.end();
+    // 例子
+    res.writeHead(200, {'Content-Type': 'text/plain', 'Trailer': 'Content-MD5'});
+    res.write('Hello World');
+    res.statusCode = 200
+    res.getHeader('Content-Type', 'text/html;charset=utf-8')
+    res.addTrailers({'Content-MD5', '***'});
+  }
+  res.end()
+})
 ```
-  
+  * timeout    响应超时会触发timeout事件；response.end()方法调用之前，如果连接中断，会触发close事件
+``` Javascript
+server.on('request', (req, res)=>{
+  if(req.url !== '/favicon.ico'){ // 请求从客户端传过来的路由
+    /* 设置请求超时时间2分钟 */
+    res.setTimeout(2 * 60 * 1000, () => {
+      console.error('请求超时！'); 
+    });
+    // 或者
+    res.setTimout(2 * 60 * 1000);
+    res.on('timeout', () => {
+      console.error('请求超时！');
+    });
+    /* 连接中断 */
+    res.on('close', () => {
+      console.error('连接中断！');
+    });
+  }
+  res.end()
+})
+```
